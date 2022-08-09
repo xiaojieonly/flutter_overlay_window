@@ -200,7 +200,12 @@ public class FlutterOverlayWindowPlugin implements
         public Result receiverResult;
         @Override
         public void onReceive(Context context, Intent intent) {
-            pendingResult.success(intent.getStringExtra("result"));
+            try {
+                String result = intent.getStringExtra("result");
+                receiverResult.success(result);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }
