@@ -2,8 +2,10 @@ package flutter.overlay.window.flutter_overlay_window;
 
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -13,6 +15,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -41,9 +44,21 @@ public class FlutterOverlayWindowPlugin implements
     private Result pendingResult;
     final int REQUEST_CODE_FOR_OVERLAY_PERMISSION = 1248;
 
+    private IntentFilter intentFilter;
+    private LocalReceiver localReceiver;
+    private LocalBroadcastManager localBroadcastManager;
+    final String broadPath = "getWechatUserNameNow";
+
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         this.context = flutterPluginBinding.getApplicationContext();
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        intentFilter = new IntentFilter(broadPath);
+        localReceiver = new LocalReceiver();
+        localBroadcastManager.registerReceiver(localReceiver, intentFilter);
+
+
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), OverlayConstants.CHANNEL_TAG);
         channel.setMethodCallHandler(this);
 
@@ -110,7 +125,13 @@ public class FlutterOverlayWindowPlugin implements
             }
             return;
         } else if (call.method.equals("getWeChatUserName")) {
-
+            Intent intent = new Intent();
+            intent.setAction("sendToRpaService");
+            intent.putExtra("action","innerText");
+            intent.putExtra("broadCastPath",broadPath);
+            intent.putExtra("path",call.arguments.toString());
+            intent.putExtra("fillText","");
+            localBroadcastManager.sendBroadcast(intent);
         } else {
             result.notImplemented();
         }
@@ -173,4 +194,12 @@ public class FlutterOverlayWindowPlugin implements
         return false;
     }
 
+
+    private class LocalReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            pendingResult.success(intent.getStringExtra("result"));
+        }
+    }
 }

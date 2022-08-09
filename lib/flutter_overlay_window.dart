@@ -122,6 +122,11 @@ class FlutterOverlayWindow {
     final bool? _res = await _channel.invokeMethod<bool?>('isOverlayActive');
     return _res ?? false;
   }
+  /// Check if the current overlay is active
+  static Future<String> getWechatUserName(String path) async {
+    final String? _res = await _channel.invokeMethod<String?>('getWeChatUserName',path);
+    return _res ?? '';
+  }
 
   /// Dispose overlay stream
   static void disposeOverlayListener() {
