@@ -109,6 +109,8 @@ public class FlutterOverlayWindowPlugin implements
                 result.success(true);
             }
             return;
+        } else if (call.method.equals("getWeChatUserName")) {
+
         } else {
             result.notImplemented();
         }
