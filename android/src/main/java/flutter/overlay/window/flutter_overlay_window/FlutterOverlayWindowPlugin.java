@@ -125,6 +125,7 @@ public class FlutterOverlayWindowPlugin implements
             }
             return;
         } else if (call.method.equals("getWeChatUserName")) {
+            localReceiver.receiverResult = result;
             Intent intent = new Intent();
             intent.setAction("sendToRpaService");
             intent.putExtra("action","innerText");
@@ -196,7 +197,7 @@ public class FlutterOverlayWindowPlugin implements
 
 
     private class LocalReceiver extends BroadcastReceiver {
-
+        public Result receiverResult;
         @Override
         public void onReceive(Context context, Intent intent) {
             pendingResult.success(intent.getStringExtra("result"));
