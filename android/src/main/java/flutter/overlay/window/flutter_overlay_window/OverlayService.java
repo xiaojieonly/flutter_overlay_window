@@ -1,5 +1,7 @@
 package flutter.overlay.window.flutter_overlay_window;
 
+import static flutter.overlay.window.flutter_overlay_window.DensityUtil.dipToPx;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -159,8 +161,8 @@ public class OverlayService extends Service implements View.OnTouchListener {
     private void resizeOverlay(int width, int height, MethodChannel.Result result) {
         if (windowManager != null) {
             WindowManager.LayoutParams params = (WindowManager.LayoutParams) flutterView.getLayoutParams();
-            params.width = width;
-            params.height = height;
+            params.width = dipToPx(getBaseContext(),width);
+            params.height = dipToPx(getBaseContext(),height);
             windowManager.updateViewLayout(flutterView, params);
             result.success(true);
         } else {
