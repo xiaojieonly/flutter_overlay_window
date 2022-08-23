@@ -1,7 +1,5 @@
 package flutter.overlay.window.flutter_overlay_window;
 
-import static flutter.overlay.window.flutter_overlay_window.DensityUtil.dipToPx;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -168,6 +166,11 @@ public class OverlayService extends Service implements View.OnTouchListener {
         } else {
             result.success(false);
         }
+    }
+
+    private int dipToPx(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
     @Override
