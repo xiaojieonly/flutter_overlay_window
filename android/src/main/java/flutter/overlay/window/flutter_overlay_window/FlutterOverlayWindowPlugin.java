@@ -196,13 +196,15 @@ public class FlutterOverlayWindowPlugin implements
     }
 
 
-    private class LocalReceiver extends BroadcastReceiver {
+    private static class LocalReceiver extends BroadcastReceiver {
         public Result receiverResult;
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
                 String result = intent.getStringExtra("result");
-                receiverResult.success(result);
+                if (receiverResult != null){
+                    receiverResult.success(result);
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }
