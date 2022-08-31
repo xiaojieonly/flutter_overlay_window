@@ -237,9 +237,10 @@ public class OverlayService extends Service implements View.OnTouchListener {
                     params.x = xx;
                     params.y = yy;
                     windowManager.updateViewLayout(flutterView, params);
-                    dragging = true;
+                    dragging = false;
                     break;
                 case MotionEvent.ACTION_UP:
+                    dragging = false;
                 case MotionEvent.ACTION_CANCEL:
                     lastYPosition = params.y;
                     if (WindowSetup.positionGravity != "none") {
