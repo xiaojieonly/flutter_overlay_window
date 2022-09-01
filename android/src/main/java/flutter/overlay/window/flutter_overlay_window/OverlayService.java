@@ -77,6 +77,7 @@ public class OverlayService extends Service implements View.OnTouchListener {
             if (windowManager != null) {
                 windowManager.removeView(flutterView);
                 windowManager = null;
+                flutterView.detachFromFlutterEngine();
                 stopSelf();
             }
             isRunning = false;
@@ -91,8 +92,9 @@ public class OverlayService extends Service implements View.OnTouchListener {
         Log.d("onStartCommand", "Service started");
         FlutterEngine engine = FlutterEngineCache.getInstance().get(OverlayConstants.CACHED_TAG);
         engine.getLifecycleChannel().appIsResumed();
+        engine.getRenderer().setSemanticsEnabled(false);
         flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
-        flutterView.attachToFlutterEngine(FlutterEngineCache.getInstance().get(OverlayConstants.CACHED_TAG));
+        flutterView.attachToFlutterEngine(engine);
         flutterView.setFitsSystemWindows(true);
         flutterView.setFocusable(true);
         flutterView.setFocusableInTouchMode(true);
