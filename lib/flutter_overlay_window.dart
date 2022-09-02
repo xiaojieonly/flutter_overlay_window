@@ -57,6 +57,15 @@ class FlutterOverlayWindow {
     );
   }
 
+  static Future<void> setDragAble(bool enableDrag) async {
+    await _channel.invokeMethod(
+      'setDragAble',
+      {
+        "enableDrag": enableDrag,
+      },
+    );
+  }
+
   /// Check if overlay permission is granted
   static Future<bool> isPermissionGranted() async {
     try {

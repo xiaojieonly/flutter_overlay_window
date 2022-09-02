@@ -133,7 +133,11 @@ public class FlutterOverlayWindowPlugin implements
             intent.putExtra("path",call.arguments.toString());
             intent.putExtra("fillText","");
             localBroadcastManager.sendBroadcast(intent);
-        } else {
+        }else if (call.method.equals("setDragAble")){
+            WindowSetup.enableDrag = Boolean.TRUE.equals(call.argument("enableDrag"));
+            result.success(true);
+        }
+        else {
             result.notImplemented();
         }
 
