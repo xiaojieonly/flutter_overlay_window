@@ -75,7 +75,7 @@ class FlutterOverlayWindow {
     }
   }
 
-  static Future<String> getClipboardData(String text) async {
+  static Future<String> getClipboardData() async {
     try {
       return await _channel.invokeMethod<String>('getClipboardData') ?? '';
     } on PlatformException catch (error) {
