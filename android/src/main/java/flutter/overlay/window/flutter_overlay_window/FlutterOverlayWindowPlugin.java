@@ -3,6 +3,8 @@ package flutter.overlay.window.flutter_overlay_window;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -128,16 +130,27 @@ public class FlutterOverlayWindowPlugin implements
             localReceiver.receiverResult = result;
             Intent intent = new Intent();
             intent.setAction("sendToRpaService");
-            intent.putExtra("action","innerText");
-            intent.putExtra("broadCastPath",broadPath);
-            intent.putExtra("path",call.arguments.toString());
-            intent.putExtra("fillText","");
+            intent.putExtra("action", "innerText");
+            intent.putExtra("broadCastPath", broadPath);
+            intent.putExtra("path", call.arguments.toString());
+            intent.putExtra("fillText", "");
             localBroadcastManager.sendBroadcast(intent);
-        }else if (call.method.equals("setDragAble")){
+        } else if (call.method.equals("setDragAble")) {
             WindowSetup.enableDrag = Boolean.TRUE.equals(call.argument("enableDrag"));
             result.success(true);
-        }
-        else {
+        } else if (call.method.equals("setClipboardData")) {
+            ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData data = ClipData.newPlainText(null,call.arguments.toString());
+            manager.setPrimaryClip(data);
+            result.success(true);
+        } else if (call.method.equals("getClipboardData")) {
+            ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = manager.getPrimaryClip();
+            if (clipData!=null&&clipData.getItemCount()>0){
+                result.success(clipData.getItemAt(0).getText().toString());
+            }
+            result.success("");
+        } else {
             result.notImplemented();
         }
 
@@ -202,14 +215,15 @@ public class FlutterOverlayWindowPlugin implements
 
     private static class LocalReceiver extends BroadcastReceiver {
         public Result receiverResult;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
                 String result = intent.getStringExtra("result");
-                if (receiverResult != null){
+                if (receiverResult != null) {
                     receiverResult.success(result);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

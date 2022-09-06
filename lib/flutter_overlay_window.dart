@@ -66,6 +66,24 @@ class FlutterOverlayWindow {
     );
   }
 
+  static Future<bool> setClipboardData(String text) async {
+    try {
+      return await _channel.invokeMethod<bool>('setClipboardData',text) ?? false;
+    } on PlatformException catch (error) {
+      log("$error");
+      return Future.value(false);
+    }
+  }
+
+  static Future<String> getClipboardData(String text) async {
+    try {
+      return await _channel.invokeMethod<String>('getClipboardData') ?? '';
+    } on PlatformException catch (error) {
+      log("$error");
+      return Future.value('');
+    }
+  }
+
   /// Check if overlay permission is granted
   static Future<bool> isPermissionGranted() async {
     try {
